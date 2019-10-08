@@ -11,8 +11,7 @@ class VideoLimited:
     t: cv2.TickMeter = cv2.TickMeter()
 
 app = Flask(__name__)
-
-wvs = WebcamVideoStream(src=0).start()
+wvs = None
 
 @app.route("/")
 def index():
@@ -43,13 +42,16 @@ def video_feed():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host",)
+    ap.add_argument("--device", type=int, default=0)
     ap.add_argument("--port",)
     ap.add_argument("--frame",)
     ap.add_argument("-P", "--preview", action='store_true')
     args = vars(ap.parse_args())
 
+    wvs = WebcamVideoStream(src=args["device"]).start()
+    
     app.run(host="0.0.0.0", port="5000", debug=True,
-            threaded=False, use_reloader=False)
+            threaded=True, use_reloader=False)
 
     wvs.stop()
 
