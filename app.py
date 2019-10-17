@@ -18,7 +18,7 @@ def index():
     return render_template("index.html")
 
 def generate():
-
+    global wvs
     while True:
         frame = wvs.read()
         if frame is None:
@@ -47,9 +47,9 @@ def main():
     ap.add_argument("--frame",)
     ap.add_argument("-P", "--preview", action='store_true')
     args = vars(ap.parse_args())
-
+    global wvs
     wvs = WebcamVideoStream(src=args["device"]).start()
-    
+
     app.run(host="0.0.0.0", port="5000", debug=True,
             threaded=True, use_reloader=False)
 
