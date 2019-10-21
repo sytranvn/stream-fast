@@ -1,2 +1,7 @@
 #!/usr/bin/env bash
-while true; do ffmpeg -re -i sample.mp4 -map 0:v -f v4l2 /dev/video0; done
+dev=${1:-0}
+while true; do
+	ffmpeg -re -nostdin -i sample.mp4 -map 0:v -f v4l2 "/dev/video$dev";
+	test $? -gt 128 && break
+done
+

@@ -20,6 +20,7 @@ def index():
 def generate():
     global wvs
     while True:
+        print(".")
         frame = wvs.read()
         if frame is None:
             print("no frame")
@@ -42,7 +43,7 @@ def video_feed():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host",)
-    ap.add_argument("--device", type=int, default=0)
+    ap.add_argument("--device", type=int, default=-1)
     ap.add_argument("--port",)
     ap.add_argument("--frame",)
     ap.add_argument("-P", "--preview", action='store_true')
