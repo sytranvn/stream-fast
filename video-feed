@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-dev=${1:-0}
+test -z $1 && echo 'Must select device' && exit 1
 while true; do
-	ffmpeg -re -nostdin -i sample.mp4 -map 0:v -f v4l2 "/dev/video$dev";
+	ffmpeg -re -nostdin -i sample.mp4 -map 0:v -f v4l2 "/dev/video$1";
 	test $? -gt 128 && break
 done
 

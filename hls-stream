@@ -1,0 +1,11 @@
+ffmpeg -i /dev/video2 \
+-s 728x410 \
+-f hls \
+-hls_time 4 \
+-hls_list_size 10 \
+-hls_playlist_type vod \
+-strftime 1 \
+-use_localtime 1 \
+-hls_flags delete_segments omit_endlist \
+-hls_segment_filename  "out/segment_%d.ts" \
+ out/index.m3u8 
