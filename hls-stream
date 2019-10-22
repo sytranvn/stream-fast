@@ -1,11 +1,16 @@
-ffmpeg -i /dev/video2 \
+#!/usr/bin/env bash
+
+test -z $1 && echo 'No device' && exit 1
+test ! -c "/dev/video$1" && echo "Can not open /dev/video$1" && exit 1
+
+ffmpeg -i "/dev/video$1" \
 -s 728x410 \
 -f hls \
 -hls_time 4 \
--hls_list_size 10 \
--hls_playlist_type vod \
+-hls_list_size 4 \
+-hls_playlist_type event \
 -strftime 1 \
 -use_localtime 1 \
--hls_flags delete_segments omit_endlist \
--hls_segment_filename  "out/segment_%d.ts" \
+-hls_flags delete_segments+round_durations+omit_endlist+append_list \
+-hls_segment_filename  "out/segment_%Y-%m-%d_%s.ts" \
  out/index.m3u8 

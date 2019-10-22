@@ -1,25 +1,16 @@
 from flask import Flask, Response, render_template, send_from_directory
 import cv2
 import argparse
-import threading, os
-from dataclasses import dataclass
-from imutils.video import WebcamVideoStream
-
-@dataclass
-class VideoLimited:
-    f: cv2.VideoWriter = cv2.VideoWriter()
-    t: cv2.TickMeter = cv2.TickMeter()
 
 app = Flask(__name__)
-wvs = None
 
 @app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/hls")
 def hls():
     return render_template("hls.html")
+
+@app.route("/favicon.ico")
+def fav():
+    return send_from_directory('static', 'favicon.ico')
 
 @app.route("/stream/<path:path>")
 def stream(path):
@@ -30,44 +21,16 @@ def stream(path):
 def public(path):
     return send_from_directory('js', path)
 
-def generate():
-    global wvs
-    while True:
-        print(".")
-        frame = wvs.read()
-        if frame is None:
-            print("no frame")
-            continue
-        
-        frame = cv2.flip(frame, 1)
-        ok, image = cv2.imencode(".jpg", frame)
-        if not ok:
-            continue
-
-        yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
-            bytearray(image) + b'\r\n')
-
-@app.route("/video_feed")
-def video_feed():
-    return Response(generate(),
-                    mimetype="multipart/x-mixed-replace; boundary=frame")
-
-
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--host",)
+    ap.add_argument("--host",default="0.0.0.0")
     ap.add_argument("--device", type=int, default=-1)
-    ap.add_argument("--port",)
+    ap.add_argument("--port",default="5000")
     ap.add_argument("--frame",)
-    ap.add_argument("-P", "--preview", action='store_true')
     args = vars(ap.parse_args())
-    global wvs
-    wvs = WebcamVideoStream(src=args["device"]).start()
 
-    app.run(host="0.0.0.0", port="5000", debug=True,
-            threaded=True, use_reloader=False)
+    app.run(host=args["host"], port=args["port"], debug=True)
 
-    wvs.stop()
 
 if __name__ == "__main__":
     main()
