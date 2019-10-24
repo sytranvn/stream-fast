@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from flask import Flask, Response, render_template, send_from_directory
 import cv2
 import argparse
